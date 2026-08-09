@@ -17,10 +17,10 @@ jobs:
               run: |
                 docker build \
                     -f Dockerfile.optimized \
-                    -t techcory-llm:${{github.sha }} .
+                    -t techcorp-llm:${{github.sha }} .
 
             - name: Scan Docker image with Trivy
-              uses: aquasecurity/trivy-action@0.28.0
+              uses: aquasecurity/trivy-action@v0.28.0
               with:
                 image-ref: techcorp-llm:${{github.sha}}
                 format: table
