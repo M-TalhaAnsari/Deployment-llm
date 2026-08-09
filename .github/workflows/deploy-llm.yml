@@ -31,7 +31,7 @@ jobs:
                 sudo apt-get install -y trivy
 
             - name: Scan Docker image with Trivy
-              uses: aquasecurity/trivy-action@v0.33.0
+              uses: aquasecurity/trivy-action@v0.33.1
               with:
                 image-ref: techcorp-llm:${{github.sha}}
                 format: table
