@@ -21,7 +21,7 @@ jobs:
               with:
                 context: .
                 file: ./Dockerfile.optimized
-                tags: techcorp-llm;${{github.sha}}
+                tags: techcorp-llm:${{github.sha}}
                 push: false
                 cache-from: type-gha
                 cacge-to: type=gha,mode=max
