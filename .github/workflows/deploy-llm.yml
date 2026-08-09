@@ -13,11 +13,18 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
             - name: Build Docker image
-              run: |
-                docker build \
-                    -f Dockerfile.optimized \
-                    -t techcorp-llm:${{github.sha }} .
+              uses: docker/build-push-action@v6
+              with:
+                context: .
+                file: ./Dockerfile.optimized
+                tags: techcorp-llm;${{github.sha}}
+                push: false
+                cache-from: type-gha
+                cacge-to: type=gha,mode=max
 
             - name: Install Trivy
               run: |
