@@ -22,9 +22,10 @@ jobs:
                 context: .
                 file: ./Dockerfile.optimized
                 tags: techcorp-llm:${{github.sha}}
+                load: true
                 push: false
                 cache-from: type-gha
-                cacge-to: type=gha,mode=max
+                cache-to: type=gha,mode=max
 
             - name: Install Trivy
               run: |
@@ -45,4 +46,4 @@ jobs:
                     image \
                     --severity HIGH,CRITICAL \
                     --exit-code 0 \
-                    techcorp-llm:${{ github.sha }}
+                    techcorp-llm:${{github.sha}}
