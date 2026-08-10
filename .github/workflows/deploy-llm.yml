@@ -32,19 +32,9 @@ jobs:
                 tags: ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}
                 load: true
                 push: false
-                cache-from: type-gha
+                cache-from: type=gha
                 cache-to: type=gha,mode=max
 
-            - name: Install Trivy
-              run: |
-                sudo apt-get update
-                sudo apt-get install -y wget
-                wget -qO- https://aquasecurity.github.io/trivy-repo/deb/public.key | \
-                    sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
-                echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | \
-                    sudo tee /etc/apt/sources.list.d/trivy.list
-                sudo apt-get update
-                sudo apt-get install -y trivy
 
             - name: Scan Docker image with Trivy
               run: |
@@ -53,5 +43,9 @@ jobs:
                     aquasec/trivy:0.65.0 \
                     image \
                     --severity HIGH,CRITICAL \
-                    --exit-code 0 \
+                    --exit-code 1 \
                     ghcr.io/m-talhaansari/techcorp-llm:${{ github.sha }}
+
+            - name: Push Docker image
+              run: |
+                docker push ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}
