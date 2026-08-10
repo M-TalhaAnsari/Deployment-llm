@@ -44,8 +44,71 @@ jobs:
                     image \
                     --severity HIGH,CRITICAL \
                     --exit-code 0 \
-                    ghcr.io/m-talhaansari/techcorp-llm:${{ github.sha }}
+                    techcorp-llm:${{ github.sha }}
 
             - name: Push Docker image
               run: |
-                docker push ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}
+                docker tag techcorp-llm:${{github.sha}} \
+                    ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}
+
+                docker push \
+                    ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}
+
+                
+            # Blue Green Deployment
+            - name: Deploy Green Environment
+              run: |
+                echo "+========+"
+                echo "BLUE_GREEN DEPLOYMENT"
+                echo "+========+"
+                echo "Current Environment: BLUE"
+                echo "New Environment: Green"
+                echo "Image: ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}"
+                echo ""
+                echo "Deploying new version to GREEN"
+                echo "GREEN Deployment started"
+
+            - name: GREEN Environment Health Check
+              run: |
+                echo "Cheching GREEN environment health...."
+
+                # simulated health check
+                HEALTH_STATUS="healthy"
+
+                if [ "$HEALTH_STATUS" = "healthy"]; then
+                    echo "GREEN environment is healthy."
+                    echo "Health check passed"
+                else
+                    echo "Green environment health check failed"
+                    exit 1
+                fi
+
+            - name: Swith traffic to Green
+              if: success()
+              run: |
+                echo "GREEN environment passed halth checks."
+                echo "Switching traffic from BLUE to GREEN"
+                echo "Traffic successfully switched to green"
+
+            - name: Rollback to blue
+              if: failure()
+              run: |
+                echo "Green deployment failed"
+                echo "Rolling back traffic to BLUE"
+                echo "ROLLBACK completed"
+                exit 1
+            
+            - name: Deployment Notification
+              if: always()
+              run: |
+                if ["${{job.status}}" = "success"]; then
+                  echo "Deployment successful"
+                  echo "Active environment: GREEN"
+                else
+                  echo "DEPLOYMENT FAILED"
+                  ECHO "ACTIVE ENVIRONMENT: BLUE"
+                FI
+
+
+
+
