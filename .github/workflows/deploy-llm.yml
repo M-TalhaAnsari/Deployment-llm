@@ -48,7 +48,7 @@ jobs:
 
             - name: Push Docker image
               run: |
-                docker tag techcorp-llm:${{github.sha}} \
+                docker tag m-talhaansari/techcorp-llm:${{github.sha}} \
                     ghcr.io/m-talhaansari/techcorp-llm:${{github.sha}}
 
                 docker push \
